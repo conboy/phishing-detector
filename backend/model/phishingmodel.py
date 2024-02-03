@@ -19,15 +19,15 @@ class PhishingModel:
     def analyze_email(self, email_text):
         phishing_probability = self.predict_phishing(email_text)
         if phishing_probability < 0.5:
-            return phishing_probability, 0
+            return phishing_probability * 100, "This email should be safe."
         print("Phishing email detected! Analyzing email...")
         client = OpenAI()
         completion = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a cyber security analyst, skilled in analyzing phishing emails."},
-                {"role": "user", "content": f"Analyze this phishing email:\n\n {email_text}"}
+                {"role": "system", "content": "You are a cyber security analyst, skilled in analyzing phishing emails. Do not write anything but the analysis."},
+                {"role": "user", "content": f"Your task is to write a short analysis on this phishing email:\n\n {email_text}"}
             ]
         )
     
-        return phishing_probability, completion.choices[0].message.content
+        return phishing_probability * 100, completion.choices[0].message.content
