@@ -17,5 +17,4 @@ services:
       - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - backend
-      - frontend
     command: ["nginx", "-g", "daemon off;"]
