@@ -11,12 +11,14 @@ function EmailForm({ analysisResults, setAnalysisResults }) {
     }, [analysisResults]);
 
     const handleButtonClick = async () => {
+        setLoading(true);
         try {
             const sentEmail = email;
             const response = await fetch('http://localhost:8000/api/email', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-Api-Key': process.env.API_KEY
                 },
                 body: JSON.stringify({ "text": email })
             });
@@ -40,6 +42,8 @@ function EmailForm({ analysisResults, setAnalysisResults }) {
             }
         } catch (error) {
             console.error('An error occurred', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -53,13 +57,24 @@ function EmailForm({ analysisResults, setAnalysisResults }) {
                 <div className="label">
                     <span className="label-text">enter a phishy email</span>
                 </div>
-                <textarea className="textarea textarea-bordered h-24" placeholder="phishy email" value={email} onChange={handleTextareaChange}></textarea>
+                <textarea 
+                    className="textarea textarea-bordered textarea-sm h-60" 
+                    placeholder="phishy email" 
+                    value={email} 
+                    onChange={handleTextareaChange}
+                ></textarea>
             </label>
             <div className="pb-4">
-                <button className="btn" onClick={handleButtonClick}>
-                    <span className="loading loading-spinner"></span>
-                    analyzing
-                </button>
+                {loading ? (
+                    <button className="btn" disabled="disabled">
+                        analyzing
+                        <span className="loading loading-spinner"></span>
+                    </button>
+                ) : (
+                    <button className="btn" onClick={handleButtonClick}>
+                        analyze 🔎
+                    </button>
+                )}
             </div>
         </div>
     );

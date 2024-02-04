@@ -10,6 +10,8 @@ class PhishingModel:
 
     # Function that returns probability of email being a phishing attack
     def predict_phishing(self, email_text):
+        if len(email_text) == 0:
+            return 0
         # Vectorize email text so log reg model can interpret
         transformed_email = self.tfidf_vectorizer.transform([email_text])
         # Predict if email is phishing attack
@@ -26,7 +28,7 @@ class PhishingModel:
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a cyber security analyst, skilled in analyzing phishing emails. Do not write anything but the analysis."},
-                {"role": "user", "content": f"Your task is to write a short analysis on this phishing email:\n\n {email_text}"}
+                {"role": "user", "content": f"Your task is to write a 1-4 sentence analysis on this phishing email:\n\n {email_text}"}
             ]
         )
     
